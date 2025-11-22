@@ -1,0 +1,14 @@
+.word-del {
+  background: #ffcccc;
+  color: #900;
+  padding: 1px 3px;
+  border-radius: 3px;
+}
+
+.word-ins {
+  background: #ccffcc;
+  color: #060;
+  padding: 1px 3px;
+  border-radius: 3px;
+}
+/* You can add global styles to this file, and also import other style files */

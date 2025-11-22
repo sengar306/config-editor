@@ -1,0 +1,39 @@
+<div class="diff-container">
+
+  <!-- FILE UPLOAD BAR -->
+  <div class="file-bar">
+    <div class="upload-block">
+      <label class="upload-label">Old File:</label>
+      <input type="file" (change)="onOldFileSelect($event)">
+    </div>
+
+    <div class="upload-block">
+      <label class="upload-label">New File:</label>
+      <input type="file" (change)="onNewFileSelect($event)">
+    </div>
+  </div>
+
+  <!-- EDITOR AREA -->
+  <div class="editor">
+    <div class="header">
+      <div class="col-title">Old File</div>
+      <div class="col-title">New File</div>
+    </div>
+
+    <div class="row" *ngFor="let r of diffRows">
+
+      <div class="col" [ngClass]="r.left.type">
+        <div class="line-no">{{ r.left.lineNo }}</div>
+        <div class="text" [innerHTML]="r.left.text"></div>
+      </div>
+
+      <div class="col" [ngClass]="r.right.type">
+        <div class="line-no">{{ r.right.lineNo }}</div>
+        <div class="text" [innerHTML]="r.right.text"></div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+

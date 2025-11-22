@@ -1,0 +1,81 @@
+.diff-editor {
+  font-family: monospace;
+  border: 1px solid #ccc;
+}
+
+.header {
+  display: flex;
+  background: #f8f9fa;
+  font-weight: 600;
+  padding: 8px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.col-title {
+  width: 50%;
+  text-align: center;
+}
+
+.row {
+  display: flex;
+  border-top: 1px solid #eee;
+}
+
+.col {
+  width: 50%;
+  display: flex;
+  padding: 4px;
+  white-space: pre-wrap;
+}
+
+.line-no {
+  width: 40px;
+  text-align: right;
+  padding-right: 10px;
+  color: #888;
+}
+
+.text {
+  flex: 1;
+}
+
+/* Line-level colors */
+.equal  { background: white; }
+.delete { background: #ffe1e1; }
+.insert { background: #e4ffe4; }
+
+/* 1️⃣ Line update color (whole line) */
+.update {
+  background: #eaf4ff !important;   /* light blue */
+}
+
+/* 2️⃣ Word update color (dark blue) */
+.del {
+  background: #c6dbff;   /* blue for removed chars */
+  color: #003a8c;
+}
+
+.ins {
+  background: #1b51b5;   /* blue for added chars */
+  color: #d4deed;
+}
+/* word deleted (old) */
+.word-del {
+  background: #c6dbff;   /* medium blue */
+  color: #003a8c;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+/* word inserted (new) */
+.word-ins {
+  background: #99bdff;   /* bright blue */
+  color: #002e73;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+/* line update yellow */
+.update {
+  background: #fff8b3 !important;
+}

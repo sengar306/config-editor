@@ -1,0 +1,24 @@
+<div class="diff-editor">
+
+  <div class="header">
+    <div class="title">Old File</div>
+    <div class="title">New File</div>
+  </div>
+
+  <div class="rows">
+    <div class="row" *ngFor="let r of diffRows">
+      
+      <div class="col left" [ngClass]="r.left.type">
+        <div class="line" *ngIf="showLineNumbers">{{ r.left.lineNo }}</div>
+        <div class="text" [innerHTML]="r.left.text"></div>
+      </div>
+
+      <div class="col right" [ngClass]="r.right.type">
+        <div class="line" *ngIf="showLineNumbers">{{ r.right.lineNo }}</div>
+        <div class="text" [innerHTML]="r.right.text"></div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
