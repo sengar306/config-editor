@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DiffEditorComponent } from './diff-editor.component';
+import { EdiotrComponent } from './ediotr.component';
 
-describe('DiffEditorComponent', () => {
-  let component: DiffEditorComponent;
-  let fixture: ComponentFixture<DiffEditorComponent>;
+describe('EdiotrComponent', () => {
+  let component: EdiotrComponent;
+  let fixture: ComponentFixture<EdiotrComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DiffEditorComponent ]
+      declarations: [ EdiotrComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DiffEditorComponent);
+    fixture = TestBed.createComponent(EdiotrComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

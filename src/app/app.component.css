@@ -1,0 +1,21 @@
+.mini-editor {
+  width: 100%;
+  min-height: 200px;
+  padding: 12px 14px;
+  font-size: 14px;
+  font-family: monospace;
+  line-height: 22px;
+  background: #f8f8f8;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+
+  white-space: pre-wrap;     /* multiline */
+  outline: none;             /* no blue border */
+  overflow-wrap: break-word; /* long words break */
+}
+
+.mini-editor:focus {
+  background: #ffffff;
+  border-color: #999;
+  box-shadow: 0 0 0 2px #d0d0d0;
+}

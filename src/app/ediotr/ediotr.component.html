@@ -1,0 +1,48 @@
+<div class="editor-wrapper">
+
+  <!-- LEFT NUMBERS -->
+  <div class="line-numbers" #lineNumbers>
+    <div class="ln-row"
+         *ngFor="let line of lines; let i = index"
+         [style.display]="isLineVisible(i) ? 'flex' : 'none'">
+      {{ i + 1 }}  <span class="arrow"
+          *ngIf="highlightLines[i+1]"
+          (click)="toggleBlock(i+1)">
+      {{ expandedBlocks.has(i+1) ? '▼' : '▶' }}
+    </span>
+    </div>
+  </div>
+
+  <!-- HIGHLIGHT OVERLAY -->
+  <div class="highlight-overlay" #overlay>
+    <div class="highlight-line"
+         *ngFor="let line of lines; let i = index"
+         [style.display]="isLineVisible(i) ? 'block' : 'none'"
+         [style.background]="highlightLines[i+1] || 'transparent'">
+    </div>
+  </div>
+
+  <!-- CODE EDITOR -->
+<div class="code-layer" #codeLayer (scroll)="scrollSync()">
+
+  <div class="code-line"
+       *ngFor="let line of lines; let i = index"
+       [style.display]="isLineVisible(i) ? 'flex' : 'none'">
+
+    <!-- COLLAPSE ARROW -->
+  
+
+    <!-- EDITABLE TEXT LINE -->
+    <!-- <div class="editable"
+         contenteditable="true"
+         #editLine
+         (input)="onUserEdit($event, i)">
+    </div> -->
+    <input type="text"     class="editor-input" [value]=line>
+
+  </div>
+
+</div>
+
+
+</div>
