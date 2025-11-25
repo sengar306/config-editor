@@ -1,0 +1,113 @@
+.editor-wrapper {
+  display: flex;
+  width: 100%;
+  height: 500px;
+  position: relative;
+  font-family: monospace;
+}
+
+.line-numbers {
+  width: 55px;
+  background: #f1f1f1;
+  padding-top: 3px;
+  border-right: 1px solid #ddd;
+  overflow-y: hidden;
+}
+
+.ln-row {
+  height: 26px;
+  line-height: 26px;
+  padding-left: 6px;
+  text-align: right;
+  padding-right: 8px;
+  color: #555;
+  font-size: 13px;
+}
+
+.highlight-overlay {
+  position: absolute;
+  left: 55px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.highlight-line {
+  height: 26px;
+  line-height: 26px;
+}
+
+.code-layer {
+  flex: 1;
+  overflow-y: scroll;
+  padding-left: 10px;
+  position: relative;
+  z-index: 10;
+}
+
+.code-line {
+  height: 26px;
+  line-height: 26px;
+  display: flex;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.arrow {
+  width: 16px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+.arrow:hover {
+  opacity: 1;
+}
+.bottom-textarea-wrapper {
+  margin-top: 20px;
+  width: 100%;
+}
+/* ONE EDITOR LOOK */
+.code-line {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  line-height: 26px;
+  gap: 6px;
+  padding-left: 5px;
+}
+
+/* INPUT EXACT LIKE EDITOR */
+.editor-input {
+  flex: 1;
+  height: 24px;
+  background: transparent; 
+  border: none;             
+  outline: none;             
+  font-family: monospace;    
+  font-size: 14px;
+  padding: 0;
+  margin: 0;
+}
+
+
+.arrow {
+  width: 16px;
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+}
+
+
+.bottom-textarea {
+  width: 100%;
+  height: 180px;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  outline: none;
+  resize: vertical;
+}
+

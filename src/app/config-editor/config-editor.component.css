@@ -25,6 +25,8 @@
   width: 50%;
   display: flex;
   padding: 4px;
+  
+ overflow-y: auto;
   white-space: pre-wrap;
 }
 
@@ -74,8 +76,25 @@
   border-radius: 3px;
   padding: 0 2px;
 }
+.row {
+  border: none !important;
+}
 
 /* line update yellow */
 .update {
   background: #fff8b3 !important;
+}
+/* Make entire row NON-scrollable */
+.rows, 
+.row, 
+.col.right {
+  overflow: hidden !important;
+}
+
+/* Only RIGHT editor scrolls */
+.col.right .code {
+  max-height: 250px;
+  overflow-y: auto !important;
+  display: block;
+  padding-right: 10px; /* avoid text cut */
 }

@@ -20,20 +20,28 @@
       <div class="col-title">New File</div>
     </div>
 
-    <div class="row" *ngFor="let r of diffRows">
+    <div class="editor-body">
 
-      <div class="col" [ngClass]="r.left.type">
-        <div class="line-no">{{ r.left.lineNo }}</div>
-        <div class="text" [innerHTML]="r.left.text"></div>
+      <!-- LEFT EDITOR -->
+      <div class="editor-col left">
+        <div class="line"
+             *ngFor="let r of diffRows">
+          <div class="line-no">{{ r.left.lineNo }}</div>
+          <div class="text" [innerHTML]="r.left.text"></div>
+        </div>
       </div>
 
-      <div class="col" [ngClass]="r.right.type">
-        <div class="line-no">{{ r.right.lineNo }}</div>
-        <div class="text" [innerHTML]="r.right.text"></div>
+      <!-- RIGHT EDITOR -->
+      <div class="editor-col right">
+        <div class="line"
+             *ngFor="let r of diffRows">
+          <div class="line-no" >{{ r.right.lineNo }}</div>
+          <div class="text" [innerHTML]="r.right.text"></div>
+        </div>
       </div>
 
     </div>
+
   </div>
 
 </div>
-

@@ -1,26 +1,24 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component } from '@angular/core';
+
 type DiffType = 'equal' | 'insert' | 'delete' | 'update';
 
 interface DiffRow {
   left: { lineNo: number | null; text: string | null; type: DiffType };
   right: { lineNo: number | null; text: string | null; type: DiffType };
 }
+
 @Component({
   selector: 'app-config-editor',
   templateUrl: './config-editor.component.html',
-  styleUrls: ['./config-editor.component.css'],
-    
+  styleUrls: ['./config-editor.component.css']
 })
 export class ConfigEditorComponent {
 
-  constructor() { }
-
-    oldText: string = '';
+  oldText: string = '';
   newText: string = '';
-
   diffRows: DiffRow[] = [];
 
-  /* FILE SELECTION HANDLERS */
+  /* ---------------- FILE SELECT ---------------- */
   onOldFileSelect(event: any) {
     const file = event.target.files[0];
     if (!file) return;
@@ -45,6 +43,7 @@ export class ConfigEditorComponent {
     reader.readAsText(file);
   }
 
+  /* ---------------- GENERATE DIFF ---------------- */
   generateDiff() {
     if (!this.oldText || !this.newText) return;
 
@@ -55,11 +54,15 @@ export class ConfigEditorComponent {
     this.diffRows = this.convertOpsToRows(ops, oldLines, newLines);
   }
 
-  /* LCS LINE DIFF */
+  /* ---------------- MAIN LCS DIFF ---------------- */
   computeLcsDiff(a: string[], b: string[]) {
     const m = a.length, n = b.length;
-    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
+    const dp = Array.from({ length: m + 1 }, () =>
+      Array(n + 1).fill(0)
+    );
+
+    // build DP
     for (let i = m - 1; i >= 0; i--) {
       for (let j = n - 1; j >= 0; j--) {
         if (a[i] === b[j]) dp[i][j] = dp[i + 1][j + 1] + 1;
@@ -70,237 +73,204 @@ export class ConfigEditorComponent {
     const ops: any[] = [];
     let i = 0, j = 0;
 
-    while (i < m && j < n) {
-      if (a[i] === b[j]) {
-        ops.push({ type: 'equal', aIndex: i, bIndex: j });
-        i++; j++;
-      } else if (dp[i + 1][j] >= dp[i][j + 1]) {
-        ops.push({ type: 'delete', aIndex: i, bIndex: -1 });
-        i++;
-      } else {
-        ops.push({ type: 'insert', aIndex: -1, bIndex: j });
-        j++;
-      }
-    }
+    // backtrack
+  // backtrack
+while (i < m && j < n) {
 
-    while (i < m) ops.push({ type: 'delete', aIndex: i++, bIndex: -1 });
-    while (j < n) ops.push({ type: 'insert', aIndex: -1, bIndex: j++ });
-console.log(ops)
-    return ops;
+  // ------------------ EQUAL ------------------
+  if (a[i] === b[j]) {
+    ops.push({ type: "equal", aIndex: i, bIndex: j });
+    i++; j++;
+    continue;
   }
 
-  /* INLINE WORD DIFF (BLUE WORD HIGHLIGHT) */
-  // inlineDiff(oldLine: string, newLine: string) {
-  //   const a = oldLine.split("");
-  //   const b = newLine.split("");
+  // ------------------ UPDATE ------------------
+// ------------------ UPDATE BLOCK ------------------
+if (
+  dp[i + 1][j + 1] >= dp[i + 1][j] &&
+  dp[i + 1][j + 1] >= dp[i][j + 1]
+) {
 
-  //   const m = a.length, n = b.length;
-  //   const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+  // ⭐ check next right line similarity
+  if (j + 1 < n && this.wordSimilarity(a[i], b[j + 1]) > 0.0) {
 
-  //   for (let i = m - 1; i >= 0; i--) {
-  //     for (let j = n - 1; j >= 0; j--) {
-  //       if (a[i] === b[j]) dp[i][j] = dp[i + 1][j + 1] + 1;
-  //       else dp[i][j] = Math.max(dp[i + 1][j], dp[i][j + 1]);
-  //     }
-  //   }
+    // 👉 current right line is shifted down → INSERT
+    ops.push({
+      type: "insert",
+      aIndex: -1,
+      bIndex: j
+    });
 
-  //   let i = 0, j = 0;
-  //   let leftHtml = "", rightHtml = "";
+    j++;       // only move right pointer
+    continue;  // do NOT update here
+  }
 
-  //   while (i < m && j < n) {
-  //     if (a[i] === b[j]) {
-  //       leftHtml += a[i];
-  //       rightHtml += b[j];
-  //       i++; j++;
-  //     } else if (dp[i + 1][j] >= dp[i][j + 1]) {
-  //       leftHtml += `<span class="del">${a[i]}</span>`;
-  //       i++;
-  //     } else {
-  //       rightHtml += `<span class="ins">${b[j]}</span>`;
-  //       j++;
-  //     }
-  //   }
+  // 👉 Normal update
+  ops.push({
+    type: "update",
+    aIndex: i,
+    bIndex: j
+  });
 
-  //   while (i < m) leftHtml += `<span class="del">${a[i++]}</span>`;
-  //   while (j < n) rightHtml += `<span class="ins">${b[j++]}</span>`;
+  i++;
+  j++;
+  continue;
+}
 
-  //   return { leftHtml, rightHtml };
-  // }
-  inlineDiff(oldLine: string, newLine: string) {
-  const a = oldLine.split(/(\s+)/);   // split words + keep spaces
-  const b = newLine.split(/(\s+)/);
 
-  const m = a.length, n = b.length;
+  // ------------------ SHIFT RULE (correct position) ------------------
+  // If left line exists on next line of right, treat as INSERT
+  if (j + 1 < n && a[i] === b[j + 1]) {
+    ops.push({
+      type: "insert",
+      aIndex: -1,
+      bIndex: j
+    });
+    j++;
+    continue;
+  }
+
+  // ------------------ DELETE ------------------
+  if (dp[i + 1][j] >= dp[i][j + 1]) {
+    ops.push({ type: "delete", aIndex: i, bIndex: -1 });
+    i++;
+    continue;
+  }
+
+  // ------------------ INSERT ------------------
+  ops.push({ type: "insert", aIndex: -1, bIndex: j });
+  j++;
+}
+
+
+    // remaining left
+    while (i < m) {
+      ops.push({ type: "delete", aIndex: i++, bIndex: -1 });
+    }
+
+    // remaining right
+    while (j < n) {
+      ops.push({ type: "insert", aIndex: -1, bIndex: j++ });
+    }
+
+    return ops;
+  }
+wordSimilarity(a: string, b: string): number {
+  const wa = a.trim().split(/\s+/);
+  const wb = b.trim().split(/\s+/);
+
+  const m = wa.length, n = wb.length;
   const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-  // LCS DP table (word-level)
+  // LCS WORD DP
   for (let i = m - 1; i >= 0; i--) {
     for (let j = n - 1; j >= 0; j--) {
-      if (a[i] === b[j]) dp[i][j] = dp[i + 1][j + 1] + 1;
+      if (wa[i] === wb[j]) dp[i][j] = dp[i + 1][j + 1] + 1;
       else dp[i][j] = Math.max(dp[i + 1][j], dp[i][j + 1]);
     }
   }
 
-  // backtrack word-level diff
-  let i = 0, j = 0;
-  let leftHtml = "", rightHtml = "";
+  const lcs = dp[0][0];   // matched words count
+  const sim = lcs / Math.max(m, n);
 
-  while (i < m && j < n) {
-    if (a[i] === b[j]) {
-      leftHtml += a[i];
-      rightHtml += b[j];
-      i++; j++;
-    } else if (dp[i + 1][j] >= dp[i][j + 1]) {
-      leftHtml += `<span class="word-del">${a[i]}</span>`;
-      i++;
-    } else {
-      rightHtml += `<span class="word-ins">${b[j]}</span>`;
-      j++;
-    }
-  }
-
-  while (i < m) leftHtml += `<span class="word-del">${a[i++]}</span>`;
-  while (j < n) rightHtml += `<span class="word-ins">${b[j++]}</span>`;
-
-  return { leftHtml, rightHtml };
+  return sim;
 }
 
+  /* ---------------- INLINE WORD DIFF ---------------- */
+  inlineDiff(oldLine: string, newLine: string) {
+    const a = oldLine.split(/(\s+)/);
+    const b = newLine.split(/(\s+)/);
 
-  /* CONVERT OPS TO ROWS */
-convertOpsToRows(ops: any[], oldLines: string[], newLines: string[]): DiffRow[] {
-  const rows: DiffRow[] = [];
-  let oldNo = 1;
-  let newNo = 1;
-  let i = 0;
+    const m = a.length, n = b.length;
+    const dp = Array.from({ length: m + 1 }, () =>
+      Array(n + 1).fill(0)
+    );
 
-  while (i < ops.length) {
-    const op = ops[i];
-
-    // ----------------------------------------------------
-    //  EQUAL BLOCK
-    // ----------------------------------------------------
-    if (op.type === 'equal') {
-      rows.push({
-        left:  { lineNo: oldNo++, text: oldLines[op.aIndex], type: 'equal' },
-        right: { lineNo: newNo++, text: newLines[op.bIndex], type: 'equal' }
-      });
-      i++;
-      continue;
+    // LCS DP for words
+    for (let i = m - 1; i >= 0; i--) {
+      for (let j = n - 1; j >= 0; j--) {
+        if (a[i] === b[j]) dp[i][j] = dp[i + 1][j + 1] + 1;
+        else dp[i][j] = Math.max(dp[i + 1][j], dp[i][j + 1]);
+      }
     }
 
-    // ----------------------------------------------------
-    //  INSERT-ONLY BLOCK
-    // ----------------------------------------------------
-    if (op.type === 'insert') {
-      while (i < ops.length && ops[i].type === 'insert') {
-        const ins = ops[i];
+    let i = 0, j = 0;
+    let leftHtml = "", rightHtml = "";
+
+    while (i < m && j < n) {
+      if (a[i] === b[j]) {
+        leftHtml += a[i];
+        rightHtml += b[j];
+        i++; j++;
+      }
+      else if (dp[i + 1][j] >= dp[i][j + 1]) {
+        leftHtml += `<span class="word-del">${a[i]}</span>`;
+        i++;
+      }
+      else {
+        rightHtml += `<span class="word-ins">${b[j]}</span>`;
+        j++;
+      }
+    }
+
+    while (i < m) leftHtml += `<span class="word-del">${a[i++]}</span>`;
+    while (j < n) rightHtml += `<span class="word-ins">${b[j++]}</span>`;
+
+    return { leftHtml, rightHtml };
+  }
+
+  /* ---------------- CONVERT OPS TO FINAL TABLE ---------------- */
+  convertOpsToRows(
+    ops: any[],
+    oldLines: string[],
+    newLines: string[]
+  ): DiffRow[] {
+
+    const rows: DiffRow[] = [];
+    let oldNo = 1, newNo = 1;
+
+    for (const op of ops) {
+
+      // --------- EQUAL ---------
+      if (op.type === "equal") {
         rows.push({
-          left:  { lineNo: null, text: null, type: 'insert' },
-          right: { lineNo: newNo++, text: newLines[ins.bIndex], type: 'insert' }
+          left:  { lineNo: oldNo++, text: oldLines[op.aIndex], type: "equal" },
+          right: { lineNo: newNo++, text: newLines[op.bIndex], type: "equal" }
         });
-        i++;
-      }
-      continue;
-    }
-
-    // ----------------------------------------------------
-    //  DELETE BLOCK + possible INSERT block → UPDATE?
-    // ----------------------------------------------------
-    if (op.type === 'delete') {
-
-      // collect deletes
-      const delOps = [];
-      while (i < ops.length && ops[i].type === 'delete') {
-        delOps.push(ops[i]);
-        i++;
-      }
-
-      // collect inserts
-      const insOps = [];
-      while (i < ops.length && ops[i].type === 'insert') {
-        insOps.push(ops[i]);
-        i++;
-      }
-
-      const delCount = delOps.length;
-      const insCount = insOps.length;
-
-      // ----------------------------------------------
-      // CASE A: both DELETE and INSERT exist
-      // → PARTIAL UPDATE (pair min of both)
-      // ----------------------------------------------
-      if (delCount > 0 && insCount > 0) {
-
-        const minCount = Math.min(delCount, insCount);
-
-        // --- UPDATED PAIRS (word-level diff) ---
-        for (let k = 0; k < minCount; k++) {
-          const oldLine = oldLines[delOps[k].aIndex];
-          const newLine = newLines[insOps[k].bIndex];
-
-          const { leftHtml, rightHtml } = this.inlineDiff(oldLine, newLine);
-
-          rows.push({
-            left:  { lineNo: oldNo++, text: leftHtml, type: 'update' },
-            right: { lineNo: newNo++, text: rightHtml, type: 'update' }
-          });
-        }
-
-        // --- leftover deletes ---
-        for (let k = minCount; k < delCount; k++) {
-          rows.push({
-            left:  { lineNo: oldNo++, text: oldLines[delOps[k].aIndex], type: 'delete' },
-            right: { lineNo: null, text: null, type: 'delete' }
-          });
-        }
-
-        // --- leftover inserts ---
-        for (let k = minCount; k < insCount; k++) {
-          rows.push({
-            left:  { lineNo: null, text: null, type: 'insert' },
-            right: { lineNo: newNo++, text: newLines[insOps[k].bIndex], type: 'insert' }
-          });
-        }
-
         continue;
       }
 
-      // ----------------------------------------------
-      // CASE B: Only deletes (no inserts)
-      // ----------------------------------------------
-      if (delCount > 0 && insCount === 0) {
-        for (let d of delOps) {
-          rows.push({
-            left:  { lineNo: oldNo++, text: oldLines[d.aIndex], type: 'delete' },
-            right: { lineNo: null, text: null, type: 'delete' }
-          });
-        }
+      // --------- UPDATE ---------
+      if (op.type === "update") {
+        const { leftHtml, rightHtml } =
+          this.inlineDiff(oldLines[op.aIndex], newLines[op.bIndex]);
+
+        rows.push({
+          left:  { lineNo: oldNo++, text: leftHtml,  type: "update" },
+          right: { lineNo: newNo++, text: rightHtml, type: "update" }
+        });
         continue;
       }
 
-      // ----------------------------------------------
-      // CASE C: Only inserts (should not happen here)
-      // but we handle for safety
-      // ----------------------------------------------
-      if (insCount > 0 && delCount === 0) {
-        for (let ins of insOps) {
-          rows.push({
-            left:  { lineNo: null, text: null, type: 'insert' },
-            right: { lineNo: newNo++, text: newLines[ins.bIndex], type: 'insert' }
-          });
-        }
+      // --------- DELETE ---------
+      if (op.type === "delete") {
+        rows.push({
+          left:  { lineNo: oldNo++, text: oldLines[op.aIndex], type: "delete" },
+          right: { lineNo: null, text: null, type: "delete" }
+        });
+        continue;
+      }
+
+      // --------- INSERT ---------
+      if (op.type === "insert") {
+        rows.push({
+          left:  { lineNo: null, text: null, type: "insert" },
+          right: { lineNo: newNo++, text: newLines[op.bIndex], type: "insert" }
+        });
         continue;
       }
     }
 
-    // fallback to avoid infinite loop
-    i++;
+    return rows;
   }
-console.log(rows)
-  return rows;
-}
-
-
-
-
 }
