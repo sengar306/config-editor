@@ -1,5 +1,32 @@
-<!-- <diff-editor [config]="diffConfig" [header]="headers"></diff-editor>     -->
- <app-ediotr [content]="oldText"></app-ediotr>
- <div class="mini-editor" contenteditable="true">
-  ssfaj
+<div class="editor-row">
+
+  <!-- LEFT EDITOR -->
+  <!-- <app-overlay-editor
+    class="editor-box"
+    [text]="configData"
+    [highlightWords]="leftHighlights"
+    (textChange)="onLeftEditorChange($event)"
+    (selectedTextemit)="onLeftSelection($event)">
+  </app-overlay-editor> -->
+
+  <!-- RIGHT EDITOR -->
+  <app-overlay-editor
+    class="editor-box"
+    [text]="oldText"
+    [highlightWords]="rightHighlights"
+    (textChange)="onRightEditorChange($event)"
+    (selectedTextemit)="onRightSelection($event)">
+  </app-overlay-editor>
+
+</div>
+
+<div class="btn-row">
+  <button class="btn" (click)="applyLookFor()">Look For</button>
+  <button class="btn test" (click)="test()">TEST NOW</button>
+</div>
+<div class="search-row">
+  <input type="text" placeholder="Enter interface... ex: GigabitEthernet0/0"
+         [(ngModel)]="searchInterface" class="input-box">
+
+  <!-- <button class="btn find" (click)="findSection()">Find Section</button> -->
 </div>
