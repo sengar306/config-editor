@@ -1,0 +1,24 @@
+<div class="editor-wrapper" >
+  <div class="editor-container"(scroll)="syncScroll($event)">
+
+    <div class="line-numbers" #lineNumbersDiv>
+      <div *ngFor="let n of lineNumbers">{{ n }}</div>
+    </div>
+
+    <div class="code-background" #backgroundDiv>
+      <div *ngFor="let l of lines" [innerHTML]="l"></div>
+    </div>
+
+    <textarea
+      class="editor-textarea"
+      [value]="rawText"
+        (keyup)="onKeyUp($event)"
+
+    (select)="onSelection($event)"
+      (input)="onInput($event)"
+ 
+      #textArea>
+    </textarea>
+
+  </div>
+</div>

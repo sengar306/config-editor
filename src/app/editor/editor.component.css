@@ -1,0 +1,57 @@
+/* Outer wrapper with fixed height */
+.editor-wrapper {
+  height: 500px;            /* ⭐ Scroll starts AFTER 500px */
+  overflow: auto;           /* ⭐ Scroll only here */
+  border: 1px solid #ccc;
+  position: relative;
+  font-family: monospace;
+}
+
+.editor-container {
+  display: flex;
+  position: relative;
+  width: 100%;
+}
+
+/* Line numbers */
+.line-numbers {
+  width: 50px;
+ 
+  background: #f0f0f0;
+  padding: 10px 5px 0 5px;
+  text-align: right;
+  line-height: 20px;
+  user-select: none;
+}
+
+/* Highlight layer */
+.code-background {
+  position: absolute;
+  left: 60px;
+  right: 0;
+  top: 0;
+  padding: 10px 10px 0 10px;
+  line-height: 20px;
+  pointer-events: none;
+  z-index: 1;
+  white-space: pre;
+}
+
+/* Textarea expands naturally (NO SCROLL HERE) */
+.editor-textarea {
+  flex: 1;
+  padding: 10px 10px 0 10px;
+  background: transparent;
+  color: transparent;
+  caret-color: black;
+  font-family: monospace;
+  line-height: 20px;
+  font-size: 13px;
+  border: none;
+  outline: none;
+  resize: none;
+  overflow: hidden;        /* ❌ No scroll inside textarea */
+  white-space: pre;
+  position: relative;
+  z-index: 2;
+}
