@@ -9,6 +9,7 @@ import { DiffEditorModule } from 'diff-library';
 import { EdiotrComponent } from './ediotr/ediotr.component';
 import { FormsModule } from '@angular/forms';
 import { EditorComponent } from './editor/editor.component';
+import { ConfigDiffComponent } from './config-diff/config-diff.component';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { EditorComponent } from './editor/editor.component';
     ConfigEditorComponent,
     EdiotrComponent,
     EditorComponent,
+    ConfigDiffComponent,
   ],
   imports: [
     BrowserModule,

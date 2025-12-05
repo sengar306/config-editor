@@ -1,0 +1,110 @@
+.container {
+  padding: 20px;
+}
+
+.editors {
+  display: flex;
+  gap: 15px;
+
+  textarea {
+    flex: 1;
+    height: 300px;
+    border: 1px solid #ccc;
+    font-family: monospace;
+    padding: 10px;
+  }
+}
+
+button {
+  margin: 15px 0;
+  padding: 8px 15px;
+}
+
+.section {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 15px;
+  background: #fafafa;
+}
+
+.green {
+  color: green;
+  font-weight: bold;
+}
+
+.red {
+  color: red;
+  font-weight: bold;
+}
+
+.block {
+  margin-bottom: 10px;
+}
+.diff-container {
+  display: flex;
+  width: 100%;
+  border: 1px solid #333;
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+  background: #1e1e1e;
+  color: #ddd;
+}
+
+/* LEFT & RIGHT panels */
+.diff-container .left,
+.diff-container .right {
+  width: 50%;
+  height: 500px;              /* scroll height */
+  overflow-y: scroll;
+  overflow-x: auto;
+  white-space: pre;
+  padding: 10px;
+  box-sizing: border-box;
+  line-height: 20px;
+}
+
+/* Scrollbar styling */
+.diff-container .left::-webkit-scrollbar,
+.diff-container .right::-webkit-scrollbar {
+  width: 6px;
+}
+
+.diff-container .left::-webkit-scrollbar-thumb,
+.diff-container .right::-webkit-scrollbar-thumb {
+  background: #444;
+}
+
+.diff-container .left::-webkit-scrollbar-track,
+.diff-container .right::-webkit-scrollbar-track {
+  background: #222;
+}
+
+/* Row styling */
+.diff-container .left div,
+.diff-container .right div {
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Line number + content gap */
+.diff-container .left div::before,
+.diff-container .right div::before {
+  content: attr(data-line);
+  color: #777;
+  margin-right: 8px;
+}
+
+/* highlight added / removed / changed lines (optional) */
+.line-added {
+  background: #003b00;
+}
+
+.line-removed {
+  background: #3b0000;
+}
+
+.line-changed {
+  background: #3b2e00;
+}
