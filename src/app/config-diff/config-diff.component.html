@@ -1,0 +1,51 @@
+<div class="container">
+
+  <h2>Config Compare Tool</h2>
+
+  <label>Feature:</label>
+  <input [(ngModel)]="feature" placeholder="example: acl" (input)="findSection(feature)">
+
+  <div class="editors">
+    <textarea [(ngModel)]="intendedText"(select)="onSelection($event)" placeholder="Paste intended config"></textarea>
+    <textarea [(ngModel)]="actualText" placeholder="Paste actual config"(input)="findSection(feature)"></textarea>
+  </div>
+
+  <button (click)="compareNow()">COMPARE</button>
+
+  <div *ngIf="result.length">
+    
+    <div *ngFor="let item of result" class="section">
+
+      <h3>{{ item.header }}</h3>
+
+      <div class="block">
+        <strong>✔ Present</strong>
+        <ul>
+          <li *ngFor="let r of item.found" class="green">{{ r }}</li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <strong>❌ Missing</strong>
+        <ul>
+          <li *ngFor="let r of item.missing" class="red">{{ r }}</li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+<div class="diff-container">
+  <div class="left" #leftPanel (scroll)="syncScroll('left')">
+    <div *ngFor="let line of intendedconfig; index as i">
+      {{ i+1 }} | {{ line }}
+    </div>
+  </div>
+
+  <div class="right" #rightPanel (scroll)="syncScroll('right')">
+    <div *ngFor="let line of actual; index as i">
+      {{ i+1 }} | {{ line }}
+    </div>
+  </div>
+</div>

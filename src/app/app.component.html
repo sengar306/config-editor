@@ -1,4 +1,4 @@
-<div class="editor-row">
+<!-- <div class="editor-row"> -->
 
   <!-- LEFT EDITOR -->
   <!-- <app-overlay-editor
@@ -10,17 +10,17 @@
   </app-overlay-editor> -->
 
   <!-- RIGHT EDITOR -->
-  <app-overlay-editor
+  <!-- <app-overlay-editor
     class="editor-box"
     [text]="oldText"
     [highlightWords]="rightHighlights"
     (textChange)="onRightEditorChange($event)"
     (selectedTextemit)="onRightSelection($event)">
-  </app-overlay-editor>
+  </app-overlay-editor> -->
 
-</div>
+<!-- </div> -->
 
-<div class="btn-row">
+<!-- <div class="btn-row">
   <button class="btn" (click)="applyLookFor()">Look For</button>
   <button class="btn test" (click)="test()">TEST NOW</button>
 </div>
@@ -28,5 +28,5 @@
   <input type="text" placeholder="Enter interface... ex: GigabitEthernet0/0"
          [(ngModel)]="searchInterface" class="input-box">
 
-  <!-- <button class="btn find" (click)="findSection()">Find Section</button> -->
-</div>
+</div> -->
+<app-config-diff></app-config-diff>
