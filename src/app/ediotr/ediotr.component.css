@@ -82,7 +82,7 @@
 .editor-input {
   flex: 1;
   height: 24px;
-  background: transparent; 
+  /* background: transparent;  */
   border: none;             
   outline: none;             
   font-family: monospace;    

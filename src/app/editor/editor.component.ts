@@ -31,6 +31,7 @@ export class EditorComponent {
 
   /** Main highlight logic */
 applyHighlight() {
+  console.log(this.highlightWords)
   const splitLines = this.rawText.split("\n");
 
   this.lines = splitLines.map(line => {

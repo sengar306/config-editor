@@ -38,8 +38,8 @@ interface GigabitEthernet0/1
 selectedLeft = "";
 selectedRight = "";
 
-leftHighlights:any = [];
-rightHighlights:any = [{text:'no',background:'green'}];
+leftHighlights:any = [{text:'hostname',color:'red'}];
+rightHighlights:any = [{text:'no',background:'green',color:"red"}];
 
 onLeftEditorChange(updated: string) {
   this.configData = updated;
@@ -177,9 +177,9 @@ test() {
 
   if (contains) {
     // Match found → highlight GREEN
-    this.leftHighlights = [
-      { text: `Look for (${lookWord})`, color: "white", background: "green" }
-    ];
+    // this.leftHighlights = [
+    //   { text: `Look for (${lookWord})`, color: "white", background: "green" }
+    // ];
 
     this.rightHighlights = [
       { text: lookWord, color: "white", background: "green" },

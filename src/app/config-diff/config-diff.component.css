@@ -46,7 +46,7 @@ button {
   border: 1px solid #333;
   font-family: "Courier New", monospace;
   font-size: 14px;
-  background: #1e1e1e;
+  
   color: #ddd;
 }
 
@@ -71,12 +71,12 @@ button {
 
 .diff-container .left::-webkit-scrollbar-thumb,
 .diff-container .right::-webkit-scrollbar-thumb {
-  background: #444;
+  /* background: #444; */
 }
 
 .diff-container .left::-webkit-scrollbar-track,
 .diff-container .right::-webkit-scrollbar-track {
-  background: #222;
+  /* background: #cbc9c9; */
 }
 
 /* Row styling */
@@ -107,4 +107,25 @@ button {
 
 .line-changed {
   background: #3b2e00;
+}
+.diff-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.diff-panel {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px;
+  border: 1px solid #ddd;
+  font-family: monospace;
+  white-space: pre-wrap;
+}
+
+.diff-content {
+  width: 100%;
+  font-size: 14px;
+  line-height: 20px;
 }

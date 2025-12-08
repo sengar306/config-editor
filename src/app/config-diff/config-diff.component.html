@@ -37,15 +37,31 @@
   </div>
 </div>
 <div class="diff-container">
-  <div class="left" #leftPanel (scroll)="syncScroll('left')">
-    <div *ngFor="let line of intendedconfig; index as i">
-      {{ i+1 }} | {{ line }}
-    </div>
+
+  <!-- LEFT PANEL -->
+  <div
+    class="diff-panel"
+    #leftPanel
+    (scroll)="syncScroll('left')"
+  >
+    <div
+      class="diff-content"
+      [innerHTML]="leftsection"
+    ></div>
   </div>
 
-  <div class="right" #rightPanel (scroll)="syncScroll('right')">
-    <div *ngFor="let line of actual; index as i">
-      {{ i+1 }} | {{ line }}
-    </div>
+  <!-- RIGHT PANEL -->
+  <div
+    class="diff-panel"
+    #rightPanel
+    (scroll)="syncScroll('right')"
+  >
+    <div
+      class="diff-content"
+      [innerHTML]="section"
+    ></div>
   </div>
+
 </div>
+
+

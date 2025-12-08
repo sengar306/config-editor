@@ -1,4 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-config-diff',
@@ -7,15 +8,19 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 })
 export class ConfigDiffComponent implements OnInit {
   sections: any=[]
-  rules:any[]=[]
+  rules:any[]=['']
   intendedconfig: any[]=[]
   actual: any[]=[]
   matched: any=[]
   selectedSection: any;
+rightHighlights: any[]=[]
+leftsection: any;
 ngOnInit(): void {
     this.findSection(this.feature)
 
 }
+constructor(private sanitizer: DomSanitizer) {}
+
   intendedText: string = "";
   actualText: string = "";
   feature: string = "acl";
@@ -61,6 +66,14 @@ findSection(word: string) {
     console.log(
     this.sections
     );
+    this.sections.forEach((item:any) => {
+         if(item.block.split('\n')[0]==this.intendedText.split('\n')[0])
+         { this.selectedSection=item.block
+          console.log('selectes',item.block.split('\n')[0])
+          console.log(item)
+         }
+      
+    });
   }
   this.checkRulesInSections()
 }
@@ -123,49 +136,128 @@ findSection(word: string) {
       .map(x => x.trim())
       .filter(x => x.startsWith("rule"));
   }
+  section:any
 checkRulesInSections() { 
-  this.actual = this.actualText.split("\n");
-  let selectedSection: any = null;
-  this.sections = this.sections.map((section: any) => {  
-  const matchedRules: string[] = [];
-  this.rules.forEach(rule => {
-  const found = section.block.toLowerCase().trim().includes(rule.toLowerCase().trim());
-      if (found) {
-        matchedRules.push(rule);
-        selectedSection = section;
-        console.log(selectedSection)
-      }
-    });
+  console.log(this.rules)
+   this.rules.forEach((item:any)=>{
+    if(this.selectedSection.includes(item)){
+      const rightstartIndex = this.selectedSection.indexOf(item);
+      const rightedIndex = rightstartIndex + item.length;
+      const leftStartndex=this.intendedText.indexOf(item);
+      const leftendindex= leftStartndex + item.length;
+      const leftLineNumber=this.getLineNumber(this.intendedText,leftStartndex)
+      const rightLineNumber=this.getLineNumber(this.selectedSection,rightstartIndex)
+     const diff = Math.abs(leftLineNumber - rightLineNumber);
+          const leftText= this.intendedText.split('\n')
+            const rightText=this.selectedSection.split('\n');
+     if (leftLineNumber > rightLineNumber) {
 
-    return {
-      ...section,
-      matchedRules,
-      hasRule: matchedRules.length > 0
-    };
+  for (let i = 0; i < diff; i++) {
+    leftText.splice(leftLineNumber - 1, 0, "");
+
+  }
+}
+
+else if (rightLineNumber > leftLineNumber) {
+
+  for (let i = 0; i < diff; i++) {
+  rightText.splice(leftLineNumber - 1, 0, "");
+ 
+  }
+   
+}
+
+   this.leftsection=this.highlightSection(leftText,leftStartndex,leftendindex,'green')
+     this.section=this.highlightSection(rightText,leftStartndex,leftendindex,'green')
+    console.log(this.section)
+
+      // this.leftsection=this.highlightSection(this.selectedSection,leftStartndex,leftendindex,'green')
+      // this.section=this.highlightSection (this.,rightstartIndex,rightedIndex,'green')
+      console.log(this.rightHighlights)
+    }
+   }) 
+//   this.actual = this.actualText.split("\n");
+//   let selectedSection: any = null;
+//   this.sections = this.sections.map((section: any) => {  
+//   const matchedRules: string[] = [];
+//   this.rules.forEach(rule => {
+//   const found = section.block.toLowerCase().trim().includes(rule.toLowerCase().trim());
+//       if (found) {
+//         matchedRules.push(rule);
+//         selectedSection = section;
+//         console.log(selectedSection)
+//       }
+//     });
+
+//     return {
+//       ...section,
+//       matchedRules,
+//       hasRule: matchedRules.length > 0
+//     };
+//   });
+
+//   if (!selectedSection) {
+//     console.warn("No section found");
+//     return;
+//   }
+
+//   this.selectedSection = selectedSection;
+// console.log(selectedSection)
+//   const intendedLines = this.intendedText.split("\n");
+//   const totalLines = this.actual.length;
+
+//   const topBlank    = Array(selectedSection.start - 1).fill("");
+//   const bottomBlank = Array(totalLines - selectedSection.end).fill("");
+
+//   // not using rule index
+//   this.intendedconfig = [
+//     ...topBlank,
+//     ...intendedLines,
+//     ...bottomBlank
+//   ];
+
+//   console.log("SELECTED:", selectedSection);
+
+
+}
+highlightSection(
+  section: any,
+  start: number,
+  end: number,
+  color: string
+) {
+console.log(section)
+  let result = "";
+  let currentIndex = 0;
+
+  section.forEach((line:any) => {
+    const lineStart = currentIndex;
+    const lineEnd = currentIndex + line.length;
+
+    if (start < lineEnd && end > lineStart) {
+
+      const localStart = Math.max(0, start - lineStart);
+      const localEnd = Math.min(line.length, end - lineStart);
+
+      result += `<div>` +
+        line.substring(0, localStart) +
+        `<span style="background:${color}; display:inline-block;">` +
+        line.substring(localStart, localEnd) +
+        `</span>` +
+        line.substring(localEnd) +
+        `</div>`;
+    } else {
+      result += `<div>${line}</div>`;
+    }
+
+    currentIndex += line.length + 1;
   });
 
-  if (!selectedSection) {
-    console.warn("No section found");
-    return;
-  }
-
-  this.selectedSection = selectedSection;
-console.log(selectedSection)
-  const intendedLines = this.intendedText.split("\n");
-  const totalLines = this.actual.length;
-
-  const topBlank    = Array(selectedSection.start - 1).fill("");
-  const bottomBlank = Array(totalLines - selectedSection.end).fill("");
-
-  // not using rule index
-  this.intendedconfig = [
-    ...topBlank,
-    ...intendedLines,
-    ...bottomBlank
-  ];
-
-  console.log("SELECTED:", selectedSection);
+  return this.sanitizer.bypassSecurityTrustHtml(result);
 }
+
+
+
 @ViewChild('leftPanel') leftPanel!: ElementRef;
 @ViewChild('rightPanel') rightPanel!: ElementRef;
 
@@ -194,5 +286,14 @@ onSelection(event: any) {
   
 }
 
-   
+   getLineNumber(text: string, index: number): number {
+  let line = 1;
+  for (let i = 0; i < index; i++) {
+    if (text[i] === '\n') {
+      line++;
+    }
+  }
+  return line;
+}
+
 }
